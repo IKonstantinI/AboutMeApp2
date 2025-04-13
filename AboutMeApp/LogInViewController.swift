@@ -15,18 +15,9 @@ final class LogInViewController: UIViewController {
     private let userName = "User"
     private let password = "123"
     
-    
-    @IBAction func forgotUserNameTapped() {
-        showAlert(with: "Oops!", and: "Your name is User 😉")
-    }
-    
-    @IBAction func forgotPasswordTapped() {
-        showAlert(with: "Oops!", and: "Your password is 123 😉")
-    }
-    
-    @IBAction func unwind(for unwindSegue: UIStoryboardSegue) {
-        userNameTextField.text = ""
-        passwordTextField.text = ""
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let loginVC = segue.destination as? GreetingsViewController else { return }
+        loginVC.welcomeName = userName
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -36,29 +27,41 @@ final class LogInViewController: UIViewController {
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         guard userNameTextField.text == userName, passwordTextField.text == password else {
-            showAlert(with: "Oops!", and: "Uncorrect user name or password")
+            showAlert(
+                with: "Oops!",
+                and: "Uncorrect user name or password") {
+                    self.passwordTextField.text = ""
+                }
             return false
         }
         return true
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let loginVC = segue.destination as? GreetingsViewController
-        loginVC?.welcomeName = userNameTextField.text
-    }
-    
-    private func showAlert(with title: String, and message: String) {
+    private func showAlert(with title: String, and message: String, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(
             title: title,
             message: message,
             preferredStyle: .alert
         )
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-            self.passwordTextField.text = ""
-            self.userNameTextField.text = ""
+            completion?()
         }
         alert.addAction(okAction)
         present(alert, animated: true)
     }
+    
+    @IBAction func forgotUserNameTapped() {
+        showAlert(with: "Oops!", and: "Your name is \(userName) 😉")
+    }
+    
+    @IBAction func forgotPasswordTapped() {
+        showAlert(with: "Oops!", and: "Your password is \(password) 😉")
+    }
+    
+    @IBAction func unwind(for unwindSegue: UIStoryboardSegue) {
+        userNameTextField.text = ""
+        passwordTextField.text = ""
+    }
+    
 }
 

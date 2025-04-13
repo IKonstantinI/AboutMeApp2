@@ -19,12 +19,7 @@ final class GreetingsViewController: UIViewController {
         super.viewDidLoad()
         welcomeLabel.text = "Welcome, \(welcomeName ?? "")!"
         logOutButton.tintColor = .white
-        
-        applyGradient(
-            colors: [. white, .blue],
-            startPoint: CGPoint(x: 0.5, y: 0),
-            endPoint: CGPoint(x: 0.5, y: 1)
-        )
+        view.applyGradient(colors: [.blue, .green])
     }
     
     @IBAction func logOutAction() {
@@ -32,14 +27,15 @@ final class GreetingsViewController: UIViewController {
     }
 }
 
-extension GreetingsViewController {
-    func applyGradient(colors: [UIColor], startPoint: CGPoint, endPoint: CGPoint) {
+extension UIView {
+    func applyGradient(colors: [UIColor]) {
         let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = view.bounds
+        gradientLayer.frame = bounds
         gradientLayer.colors = colors.map { $0.cgColor }
-        gradientLayer.startPoint = startPoint
-        gradientLayer.endPoint = endPoint
-        view.layer.insertSublayer(gradientLayer, at: 0)
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0, y: 1)
+        layer.insertSublayer(gradientLayer, at: 0)
     }
 }
 
